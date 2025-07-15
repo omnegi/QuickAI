@@ -55,7 +55,7 @@ export const AiToolsData = [
         description: 'Summarize the uploaded pdf for a quick review',
         Icon: FileSymlink,
         bg: { from: '#5C6AF1', to: '#427DF5' },
-        path: '/ai/remove-object'
+        path: '/ai/pdf-summarizer'
     },
     {
         title: 'Resume Reviewer',
