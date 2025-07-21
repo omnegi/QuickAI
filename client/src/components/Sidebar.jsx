@@ -1,5 +1,5 @@
 import { Protect, useClerk, useUser } from '@clerk/clerk-react';
-import { Eraser, FileSymlink, FileText, Hash, House, Image, LogOut, Scissors, SquarePen, Users } from 'lucide-react';
+import { AirplayIcon, Bot, Briefcase, Eraser, FileSymlink, FileText, Hash, House, Image, LogOut, Mail, Scissors, SendHorizonal, SquarePen, Users } from 'lucide-react';
 import React from 'react'
 import { NavLink } from 'react-router-dom';
 
@@ -9,9 +9,12 @@ const navItems = [
   {to:'/ai/blog-titles', label:'Blog Titles',Icon:Hash},
   {to:'/ai/generate-images', label:'Generate Images',Icon:Image},
   {to:'/ai/remove-background', label:'Remove Background',Icon:Eraser},
-
-  {to:'/ai/review-resume', label:'Review Resume',Icon:FileText},
   {to:'/ai/pdf-summarizer', label:'PDF Summarizer',Icon:FileSymlink},
+  {to:'/ai/generate-email', label:'Generate Email',Icon:Mail},
+   {to:'/ai/review-resume', label:'Review Resume',Icon:FileText},
+  {to:'/ai/generate-interviewquestions', label:'Generate Interview Questions',Icon:Briefcase},
+  {to:'/ai/generate-chatbot', label:'Chatbot',Icon:Bot},
+  
   {to:'/ai/community', label:'Community',Icon:Users},
 ]
 

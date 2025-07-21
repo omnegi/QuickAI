@@ -288,4 +288,140 @@ export const pdfSummerizer = async (req, res) => {
     }
 }
 
+export const generateEmail = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const { prompt, style } = req.body;
+        const plan = req.plan;
+        const free_usage = req.free_usage;
 
+        // Free Plan Limit Check
+        if (plan !== 'premium' && free_usage >= 100) {
+            return res.json({
+                success: false,
+                message: 'Free usage limit exceeded. Upgrade to premium for more requests.'
+            });
+        }
+
+        // AI Prompt
+        const formattedPrompt = `Write an email in a ${style || 'Professional'} tone. 
+Here are the details:\n\n${prompt}\n\n
+The email should sound natural, polite, and clear.`;
+
+
+        // AI API Call (Gemini)
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [
+                {
+                    role: "user",
+                    content: formattedPrompt,
+                },
+            ],
+            temperature: 0.7,
+            maxTokens: 500,
+        });
+
+        const content = response.choices[0].message.content;
+
+        // Save to Database
+        await sql`
+            INSERT INTO creation(user_id, prompt, content, type)
+            VALUES(${userId}, ${prompt}, ${content}, 'email')
+        `;
+
+        // Update Free Usage Counter if user is on Free Plan
+        if (plan !== 'premium') {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: { free_usage: free_usage + 1 }
+            });
+        }
+
+        // Send Response
+        res.json({ success: true, content });
+
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export const generateInterviewQuestions = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const { jobRole } = req.body;
+        const plan = req.plan;
+        const free_usage = req.free_usage;
+
+        if (plan !== 'premium' && free_usage >= 100) {
+            return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
+        }
+
+        const formattedPrompt = `
+Generate a list of 10 smart, professional interview questions to ask a candidate for the role of "${jobRole}". 
+Include both technical and behavioral questions if relevant. Format as a numbered list.
+`;
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [
+                {
+                    role: "user",
+                    content: formattedPrompt,
+                },
+            ],
+            temperature: 0.5,
+            maxTokens: 1000,
+        });
+
+        const content = response.choices[0].message.content;
+
+        await sql`
+            INSERT INTO creation(user_id, prompt, content, type)
+            VALUES(${userId}, ${jobRole}, ${content}, 'interview-questions')
+        `;
+
+        if (plan !== 'premium') {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: { free_usage: free_usage + 1 }
+            });
+        }
+
+        res.json({ success: true, content });
+
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export const chatWithRoleAI = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const { message } = req.body;
+        const plan = req.plan;
+
+        if (!message) {
+            return res.json({ success: false, message: 'Please provide a message.' });
+        }
+
+        const messages = [
+            { role: "system", content: "You are a friendly and helpful AI assistant. Engage in natural, casual conversation on any topic." },
+            { role: "user", content: message }
+        ];
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-1.5-flash",
+            messages,
+            temperature: 0.7,
+            maxTokens: 300,
+        });
+
+        const reply = response.choices[0].message.content;
+        res.json({ success: true, reply });
+
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+};

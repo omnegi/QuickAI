@@ -15,6 +15,9 @@ import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import PdfSummarizer from './pages/PdfSummarizer'
 import {Toaster} from 'react-hot-toast'
+import GenerateEmail from './pages/GenerateEmail'
+import GenerateInterviewQuestions from './pages/InterviewQuestion'
+import ChatWithAI from './pages/Chatbot'
 
 
 const App = () => {
@@ -36,6 +39,9 @@ const App = () => {
           <Route path='remove-objects' element={<RemoveObjects/>}/>
           <Route path='pdf-summarizer' element={<PdfSummarizer/>}/>
           <Route path='community' element={<Community/>}/>
+          <Route path='generate-email' element={<GenerateEmail/>}/>
+          <Route path='generate-interviewquestions' element={<GenerateInterviewQuestions/>}/>
+          <Route path='generate-chatbot' element={<ChatWithAI/>}/>
           
 
         </Route>

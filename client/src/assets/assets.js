@@ -43,6 +43,13 @@ export const AiToolsData = [
         bg: { from: '#20C363', to: '#11B97E' },
         path: '/ai/generate-images'
     },
+        {
+        title: 'AI Email Generation',
+        description: 'Generate high-quality, engaging articles on any topic with our AI writing technology.',
+        Icon: Image,
+        bg: { from: '#20C363', to: '#11B97E' },
+        path: '/ai/generate-email'
+    },
     {
         title: 'Background Removal',
         description: 'Effortlessly remove backgrounds from your images with our AI-driven tool.',
@@ -63,6 +70,20 @@ export const AiToolsData = [
         Icon: FileText,
         bg: { from: '#12B7AC', to: '#08B6CE' },
         path: '/ai/review-resume'
+    },
+       {
+        title: 'Generate Interview Questions',
+        description: 'Generate interview questions for your next job interview with our AI-powered tool.',
+        Icon: FileText,
+        bg: { from: '#12B7AC', to: '#08B6CE' },
+        path: '/ai/generate-interviewquestions'
+    },
+       {
+        title: 'Chat with AI',
+        description: 'Engage in a conversation with our AI chatbot to get answers to your questions.',
+        Icon: FileText,
+        bg: { from: '#12B7AC', to: '#08B6CE' },
+        path: '/ai/generate-chatbot'
     }
 ]
 
