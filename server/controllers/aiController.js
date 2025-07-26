@@ -414,7 +414,7 @@ export const chatWithRoleAI = async (req, res) => {
             model: "gemini-1.5-flash",
             messages,
             temperature: 0.7,
-            maxTokens: 300,
+            
         });
 
         const reply = response.choices[0].message.content;
