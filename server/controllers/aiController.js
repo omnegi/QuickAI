@@ -434,7 +434,7 @@ export const chatWithRoleAI = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
-<<<<<<< HEAD
+
 
 export const pdfChatbot = async (req, res) => {
     try {
@@ -520,5 +520,5 @@ export const pdfChatbot = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
-=======
->>>>>>> e09976eab0a254601b5433d1f1f856c1d3a358f0
+
+
