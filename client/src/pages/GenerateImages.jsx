@@ -8,7 +8,7 @@ axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const GenerateImages = () => {
   
-     const imageStyle=['Realistic', 'Cartoon style','Potrait style', '3D atyle', 'Fantasy style','Anime style','Ghibli style'];
+     const imageStyle=['Realistic', 'Cartoon style','Potrait style', '3D style', 'Fantasy style','Anime style','Ghibli style'];
 
       const [selectedStyle, setSelectedStyle] = useState('Realistic');
       const [input, setInput] = useState('');

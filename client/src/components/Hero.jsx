@@ -69,8 +69,8 @@ const Hero = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.3 }}
       >
-        <img src={assets.user_group} alt='user group' className='h-8' />
-        Trusted by 1k+ people
+{/*         <img src={assets.user_group} alt='user group' className='h-8' />
+        Trusted by 1k+ people */}
       </motion.div>
     </motion.div>
   );
