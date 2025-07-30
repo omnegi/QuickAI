@@ -247,9 +247,9 @@ export const pdfSummerizer = async (req, res) => {
         const { userId } = req.auth();
         const pdfSum = req.file;
         const plan = req.plan;
+        const free_usage = req.free_usage;
 
-
-        if (plan !== 'premium') {
+        if (plan !== 'premium' && free_usage >= 100) {
             return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
         }
 
@@ -274,11 +274,20 @@ export const pdfSummerizer = async (req, res) => {
 
 
 
-        await sql` INSERT INTO creation(user_id, prompt, content, type)
-            VALUES(${userId},'Summary of the uploaded pdf',${content},'pdf-summerizer')`;
+        const [result] = await sql` 
+            INSERT INTO creation(user_id, prompt, content, type)
+            VALUES(${userId},'Summary of the uploaded pdf',${content},'pdf-summerizer')
+            RETURNING id
+        `;
 
+        // Update free usage counter if user is on free plan
+        if (plan !== 'premium') {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: { free_usage: free_usage + 1 }
+            });
+        }
 
-        res.json({ success: true, content });
+        res.json({ success: true, content, pdfId: result.id });
 
 
 
@@ -419,6 +428,91 @@ export const chatWithRoleAI = async (req, res) => {
 
         const reply = response.choices[0].message.content;
         res.json({ success: true, reply });
+
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export const pdfChatbot = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const { message, pdfId, conversationHistory } = req.body;
+        const plan = req.plan;
+        const free_usage = req.free_usage;
+
+        if (plan !== 'premium' && free_usage >= 100) {
+            return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
+        }
+
+        if (!message) {
+            return res.json({ success: false, message: 'Please provide a message.' });
+        }
+
+        if (!pdfId) {
+            return res.json({ success: false, message: 'PDF ID is required for context.' });
+        }
+
+        // Get the original PDF summary from database
+        const [pdfSummary] = await sql`
+            SELECT content FROM creation 
+            WHERE id = ${pdfId} AND user_id = ${userId} AND type = 'pdf-summerizer'
+        `;
+
+        if (!pdfSummary) {
+            return res.json({ success: false, message: 'PDF summary not found or access denied.' });
+        }
+
+        // Build conversation context
+        const systemPrompt = `You are a helpful AI assistant that has access to a summarized PDF document. 
+        The user is asking questions about this document. Please answer based on the summary provided.
+        If the question cannot be answered from the summary, politely say so.
+        
+        PDF Summary:
+        ${pdfSummary.content}`;
+
+        const messages = [
+            { role: "system", content: systemPrompt }
+        ];
+
+        // Add conversation history if provided
+        if (conversationHistory && Array.isArray(conversationHistory)) {
+            conversationHistory.forEach(msg => {
+                messages.push({ role: msg.role, content: msg.content });
+            });
+        }
+
+        // Add current user message
+        messages.push({ role: "user", content: message });
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages,
+            temperature: 0.7,
+            maxTokens: 800,
+        });
+
+        const reply = response.choices[0].message.content;
+
+        // Save the conversation to database
+        await sql`
+            INSERT INTO creation(user_id, prompt, content, type)
+            VALUES(${userId}, ${`PDF Chat: ${message}`}, ${reply}, 'pdf-chat')
+        `;
+
+        // Update free usage counter if user is on free plan
+        if (plan !== 'premium') {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: { free_usage: free_usage + 1 }
+            });
+        }
+
+        res.json({ 
+            success: true, 
+            reply,
+            conversationId: Date.now() // Simple conversation ID for frontend tracking
+        });
 
     } catch (error) {
         console.log(error.message);

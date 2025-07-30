@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../middlewares/auth.js';
-import { chatWithRoleAI, generateArticle, generateBlogTitle, generateEmail, generateImage, generateInterviewQuestions, pdfSummerizer, removeImageBackground, removeImageObject, resumeReview } from '../controllers/aiController.js';
+import { chatWithRoleAI, generateArticle, generateBlogTitle, generateEmail, generateImage, generateInterviewQuestions, pdfSummerizer, removeImageBackground, removeImageObject, resumeReview, pdfChatbot } from '../controllers/aiController.js';
 import { upload } from '../configs/multer.js';
 
 const aiRouter = express.Router();
@@ -15,9 +15,6 @@ aiRouter.post('/pdf-summarizer', upload.single('pdf'), auth, pdfSummerizer);
 aiRouter.post('/generate-email', auth, generateEmail);
 aiRouter.post('/generate-interviewquestions', auth, generateInterviewQuestions);
 aiRouter.post('/generate-chatbot', auth, chatWithRoleAI);
-
-
-
-
+aiRouter.post('/pdf-chatbot', auth, pdfChatbot);
 
 export default aiRouter;

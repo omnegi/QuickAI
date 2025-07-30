@@ -58,3 +58,21 @@ export const toggleLikeCreation = async (req, res) => {
 
     }
 }
+
+export const getPdfSummaries = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+
+        const summaries = await sql`
+            SELECT id, prompt, content, created_at 
+            FROM creation 
+            WHERE user_id = ${userId} AND type = 'pdf-summerizer' 
+            ORDER BY created_at DESC
+        `;
+        
+        res.json({ success: true, summaries });
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+}

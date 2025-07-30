@@ -18,10 +18,9 @@ app.get('/', (req, res) => {
     res.send('server is running');
 });
 
-app.use(requireAuth());
-
-app.use('/api/ai', aiRouter);
-app.use('/api/user', userRouter);
+// Apply authentication only to API routes, not globally
+app.use('/api/ai', requireAuth(), aiRouter);
+app.use('/api/user', requireAuth(), userRouter);
 
 const PORT=process.env.PORT || 3000;
 
