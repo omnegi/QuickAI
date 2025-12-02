@@ -23,7 +23,7 @@ export const generateArticle = async (req, res) => {
             return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
         }
         const response = await AI.chat.completions.create({
-            model: "gemini-2.-flash",
+            model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
 
