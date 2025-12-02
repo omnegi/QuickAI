@@ -23,7 +23,7 @@ export const generateArticle = async (req, res) => {
             return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
         }
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
 
@@ -420,10 +420,10 @@ export const chatWithRoleAI = async (req, res) => {
         ];
 
         const response = await AI.chat.completions.create({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             messages,
             temperature: 0.7,
-            
+
         });
 
         const reply = response.choices[0].message.content;
@@ -509,8 +509,8 @@ export const pdfChatbot = async (req, res) => {
             });
         }
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             reply,
             conversationId: Date.now() // Simple conversation ID for frontend tracking
         });
