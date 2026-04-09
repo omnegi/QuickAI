@@ -61,7 +61,7 @@ export const generateBlogTitle = async (req, res) => {
             model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
-            maxTokens: 200,
+            maxTokens: 3000,
         });
 
 
@@ -197,51 +197,111 @@ export const removeImageObject = async (req, res) => {
 }
 
 export const resumeReview = async (req, res) => {
+
     try {
+
         const { userId } = req.auth();
+
         const resume = req.file;
-        const plan = req.plan;
-        const free_usage = req.free_usage;
 
-
-        if (plan !== 'premium' && free_usage >= 100) {
-            return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
-        }
-
-        if (resume.size > 5 * 1024 * 1024) {
-            return res.json({ success: false, message: 'File size exceeds the limit of 5MB.' });
-        }
+        const { jobDescription } = req.body;
 
         const dataBuffer = fs.readFileSync(resume.path);
-        const pdfData = await pdf(dataBuffer)
 
-        const prompt = `Review the following resume and provide feedback on its strengths and areas for improvement. Focus on the content, structure, and overall presentation. Here is the resume content\n\n: ${pdfData.text}`;
+        const pdfData = await pdf(dataBuffer);
+
+
+        const prompt = `
+You are an ATS (Applicant Tracking System).
+
+Compare the RESUME with the JOB DESCRIPTION.
+
+Give response in structured format:
+
+1. Match Score (0-100%)
+2. Matching Skills
+3. Missing Skills
+4. Strengths
+5. Weaknesses
+6. Suggestions to improve resume
+7. Keywords to add
+8. Final ATS verdict
+
+JOB DESCRIPTION:
+${jobDescription}
+
+
+RESUME:
+${pdfData.text.slice(0,12000)}
+
+Give clear professional output.
+`;
+
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
-            messages: [{ role: "user", content: prompt, }],
-            temperature: 0.7,
-            maxTokens: 6000,
+
+            model: "gemini-1.5-flash",
+
+            messages: [
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+
+            temperature: 0.3,
+
+            maxTokens: 6000
+
         });
+
 
         const content = response.choices[0].message.content;
 
 
+        await sql`
 
-        await sql` INSERT INTO creation(user_id, prompt, content, type)
-            VALUES(${userId},'review the uploaded resume',${content},'resume-review')`;
+        INSERT INTO creation(user_id,prompt,content,type)
+
+        VALUES(
+
+        ${userId},
+
+        'resume review with jd',
+
+        ${content},
+
+        'resume-review'
+
+        )
+
+        `;
 
 
-        res.json({ success: true, content });
+        res.json({
+
+            success:true,
+
+            content
+
+        });
 
 
-
-    } catch (error) {
-        console.log(error.message)
-        res.json({ success: false, message: error.message });
     }
-}
 
+    catch(error){
+
+        res.json({
+
+            success:false,
+
+            message:error.message
+
+        });
+
+    }
+
+};
 export const pdfSummerizer = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -328,7 +388,7 @@ The email should sound natural, polite, and clear.`;
                 },
             ],
             temperature: 0.7,
-            maxTokens: 500,
+            maxTokens: 5000,
         });
 
         const content = response.choices[0].message.content;
@@ -380,7 +440,7 @@ Include both technical and behavioral questions if relevant. Format as a numbere
                 },
             ],
             temperature: 0.5,
-            maxTokens: 1000,
+            maxTokens: 5000,
         });
 
         const content = response.choices[0].message.content;
