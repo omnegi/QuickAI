@@ -212,27 +212,21 @@ export const resumeReview = async (req, res) => {
 
 
         const prompt = `
-You are an ATS (Applicant Tracking System).
+Compare resume with job description.
 
-Compare the RESUME with the JOB DESCRIPTION.
+Give:
 
-Give response in structured format:
-
-1. Match Score (0-100%)
-2. Matching Skills
-3. Missing Skills
-4. Strengths
-5. Weaknesses
-6. Suggestions to improve resume
-7. Keywords to add
-8. Final ATS verdict
+Match Score %
+Matching skills
+Missing skills
+Improvements
 
 JOB DESCRIPTION:
 ${jobDescription}
 
 
 RESUME:
-${pdfData.text.slice(0,12000)}
+${pdfData.text.slice(0,8000)}
 
 Give clear professional output.
 `;
