@@ -1,12 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
-import { SendHorizonal } from "lucide-react";
+import { SendHorizonal, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+
+
+const suggestions = [
+
+  "Explain quantum computing",
+
+  "Write a Python script to sort a list",
+
+  "What's the weather like today?",
+
+  "Summarize a PDF document"
+
+];
+
+
 
 const ChatWithAI = () => {
 
@@ -22,15 +36,15 @@ const ChatWithAI = () => {
 
 
 
-  const handleSend = async () => {
+  const sendMessage = async (text) => {
 
-    if (!input.trim()) return;
+    if (!text.trim()) return;
 
     const userMessage = {
 
       role: "user",
 
-      content: input
+      content: text
 
     };
 
@@ -40,13 +54,15 @@ const ChatWithAI = () => {
 
     setLoading(true);
 
+
+
     try {
 
       const { data } = await axios.post(
 
         "/api/ai/generate-chatbot",
 
-        { message: input },
+        { message: text },
 
         {
 
@@ -59,6 +75,7 @@ const ChatWithAI = () => {
         }
 
       );
+
 
 
       if (data.success) {
@@ -85,7 +102,7 @@ const ChatWithAI = () => {
 
     catch (error) {
 
-      toast.error("AI error");
+      toast.error("Error generating response");
 
     }
 
@@ -117,7 +134,6 @@ const ChatWithAI = () => {
 
     <div className="flex flex-col h-screen text-white
 
-
     bg-gradient-to-br
 
     from-[#0f172a]
@@ -127,144 +143,209 @@ const ChatWithAI = () => {
     to-[#020617]">
 
 
-
-      {/* HEADER */}
-
-      <div className="px-6 py-4 border-b border-white/10 backdrop-blur-lg">
-
-        <h1 className="text-lg font-semibold">
-
-          AI Assistant
-
-        </h1>
-
-      </div>
-
-
-
       {/* CHAT AREA */}
 
       <div
 
         ref={chatRef}
 
-        className="flex-1 overflow-y-auto px-4 py-6 space-y-6"
+        className="flex-1 overflow-y-auto px-4 py-6"
 
       >
 
 
-        {messages.length === 0 && (
 
-          <div className="flex flex-col items-center justify-center mt-20 gap-3 text-center">
+        {
 
-            <h2 className="text-2xl font-semibold text-white/80">
+          messages.length === 0 && (
 
-              How can I help today?
-
-            </h2>
-
-            <p className="text-white/40 text-sm">
-
-              Ask anything about coding, AI, career, projects...
-
-            </p>
-
-          </div>
-
-        )}
+            <div className="flex flex-col items-center justify-center mt-32 gap-6 text-center">
 
 
+              <div className="p-3 rounded-full
 
-        {messages.map((msg, index) => (
+              bg-white/5
 
-          <div
+              border border-white/10
 
-            key={index}
+              backdrop-blur-lg">
 
-            className={`flex
+                <Sparkles size={22} />
 
-            ${msg.role === "user"
+              </div>
 
-                ? "justify-end"
 
-                : "justify-start"
 
-              }`}
+              <h1 className="text-2xl font-semibold text-white/90">
 
-          >
+                How can I help you today?
 
-            <div
+              </h1>
 
-              className={`
 
-              max-w-[75%]
 
-              px-4 py-3
+              {/* Suggestion Buttons */}
 
-              rounded-2xl
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 w-full max-w-xl">
 
-              text-sm
 
-              backdrop-blur-lg
+                {
 
-              shadow-md
+                  suggestions.map((item, i) => (
 
-              ${msg.role === "user"
+                    <button
 
-                  ?
+                      key={i}
 
-                  "bg-gradient-to-r
+                      onClick={() => sendMessage(item)}
 
-                  from-blue-500
+                      className="text-left px-4 py-3 rounded-xl
 
-                  to-indigo-600
+                      bg-white/5
 
-                  text-white
+                      border border-white/10
 
-                  rounded-br-md"
+                      hover:bg-white/10
 
-                  :
+                      transition
 
-                  "bg-white/5
+                      text-sm"
 
-                  border
+                    >
 
-                  border-white/10
+                      {item}
 
-                  text-white/90
+                    </button>
 
-                  rounded-bl-md"
+                  ))
 
                 }
 
-              `}
 
-            >
+              </div>
 
-              <Markdown remarkPlugins={[remarkGfm]}>
 
-                {msg.content}
-
-              </Markdown>
 
             </div>
 
-          </div>
+          )
 
-        ))}
+        }
 
 
 
-        {loading && (
+        {/* Messages */}
 
-          <div className="text-white/40 text-sm">
 
-            AI is typing...
 
-          </div>
+        <div className="space-y-6 mt-6">
 
-        )}
 
+          {
+
+            messages.map((msg, index) => (
+
+              <div
+
+                key={index}
+
+                className={`flex
+
+                ${msg.role === "user"
+
+                    ? "justify-end"
+
+                    : "justify-start"
+
+                  }`}
+
+              >
+
+
+                <div
+
+                  className={`
+
+                  max-w-[75%]
+
+                  px-4 py-3
+
+                  rounded-2xl
+
+                  text-sm
+
+                  backdrop-blur-lg
+
+                  shadow-md
+
+
+                  ${msg.role === "user"
+
+                      ?
+
+                      "bg-gradient-to-r
+
+                      from-blue-500
+
+                      to-indigo-600
+
+                      text-white
+
+                      rounded-br-md"
+
+                      :
+
+                      "bg-white/5
+
+                      border
+
+                      border-white/10
+
+                      text-white/90
+
+                      rounded-bl-md"
+
+                    }
+
+                  `}
+
+                >
+
+
+                  <Markdown remarkPlugins={[remarkGfm]}>
+
+                    {msg.content}
+
+                  </Markdown>
+
+
+                </div>
+
+
+              </div>
+
+            ))
+
+          }
+
+
+
+          {
+
+            loading && (
+
+              <p className="text-white/40 text-sm">
+
+                AI is typing...
+
+              </p>
+
+            )
+
+          }
+
+
+        </div>
 
 
       </div>
@@ -272,6 +353,8 @@ const ChatWithAI = () => {
 
 
       {/* INPUT BAR */}
+
+
 
       <div className="p-4 border-t border-white/10 backdrop-blur-lg">
 
@@ -291,19 +374,20 @@ const ChatWithAI = () => {
 
         shadow-lg">
 
+
           <input
 
             value={input}
 
             onChange={(e) => setInput(e.target.value)}
 
-            placeholder="Message AI..."
+            placeholder="Message ChatBot..."
 
             className="flex-1 bg-transparent outline-none
 
             text-sm text-white placeholder:text-white/40"
 
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
 
           />
 
@@ -311,7 +395,7 @@ const ChatWithAI = () => {
 
           <button
 
-            onClick={handleSend}
+            onClick={() => sendMessage(input)}
 
             disabled={loading}
 
@@ -341,6 +425,13 @@ const ChatWithAI = () => {
 
 
         </div>
+
+
+        <p className="text-xs text-center text-white/30 mt-2">
+
+          ChatBot can make mistakes. Verify important information.
+
+        </p>
 
 
       </div>
