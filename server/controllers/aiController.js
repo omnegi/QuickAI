@@ -212,21 +212,27 @@ export const resumeReview = async (req, res) => {
 
 
         const prompt = `
-Compare resume with job description.
+You are an ATS (Applicant Tracking System).
 
-Give:
+Compare the RESUME with the JOB DESCRIPTION.
 
-Match Score %
-Matching skills
-Missing skills
-Improvements
+Give response in structured format:
+
+1. Match Score (0-100%)
+2. Matching Skills
+3. Missing Skills
+4. Strengths
+5. Weaknesses
+6. Suggestions to improve resume
+7. Keywords to add
+8. Final ATS verdict
 
 JOB DESCRIPTION:
 ${jobDescription}
 
 
 RESUME:
-${pdfData.text.slice(0,8000)}
+${pdfData.text.slice(0,12000)}
 
 Give clear professional output.
 `;
@@ -234,7 +240,7 @@ Give clear professional output.
 
         const response = await AI.chat.completions.create({
 
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
 
             messages: [
                 {
