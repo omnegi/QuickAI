@@ -221,7 +221,7 @@ export const resumeReview = async (req, res) => {
             model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
-            maxTokens: 1000,
+            maxTokens: 6000,
         });
 
         const content = response.choices[0].message.content;
@@ -267,7 +267,7 @@ export const pdfSummerizer = async (req, res) => {
             model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
-            maxTokens: 1000,
+            maxTokens: 6000,
         });
 
         const content = response.choices[0].message.content;
