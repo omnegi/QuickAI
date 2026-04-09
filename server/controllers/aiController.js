@@ -58,7 +58,7 @@ export const generateBlogTitle = async (req, res) => {
         }
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 200,
@@ -218,7 +218,7 @@ export const resumeReview = async (req, res) => {
         const prompt = `Review the following resume and provide feedback on its strengths and areas for improvement. Focus on the content, structure, and overall presentation. Here is the resume content\n\n: ${pdfData.text}`;
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 1000,
@@ -264,7 +264,7 @@ export const pdfSummerizer = async (req, res) => {
         Include all major sections, important points, and technical terms if present." ${pdfData.text}`;
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 1000,
@@ -320,7 +320,7 @@ The email should sound natural, polite, and clear.`;
 
         // AI API Call (Gemini)
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             messages: [
                 {
                     role: "user",
@@ -488,7 +488,7 @@ export const pdfChatbot = async (req, res) => {
         messages.push({ role: "user", content: message });
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             messages,
             temperature: 0.7,
             maxTokens: 800,
