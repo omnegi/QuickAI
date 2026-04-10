@@ -23,7 +23,7 @@ export const generateArticle = async (req, res) => {
             return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
         }
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 1200,
@@ -59,7 +59,7 @@ export const generateBlogTitle = async (req, res) => {
         }
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 800,
@@ -241,7 +241,7 @@ Give clear professional output.
 
         const response = await AI.chat.completions.create({
 
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
 
             messages: [
                 {
@@ -324,7 +324,7 @@ export const pdfSummerizer = async (req, res) => {
         Include all major sections, important points, and technical terms if present." ${pdfData.text}`;
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 1500,
@@ -380,7 +380,7 @@ The email should sound natural, polite, and clear.`;
 
         // AI API Call (Gemini)
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
             messages: [
                 {
                     role: "user",
@@ -432,7 +432,7 @@ Include both technical and behavioral questions if relevant. Format as a numbere
 `;
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
             messages: [
                 {
                     role: "user",
@@ -490,7 +490,7 @@ Always try to give complete and meaningful responses rather than very short repl
         ];
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
             messages,
             temperature: 0.7,
             maxTokens: 1000,         
@@ -559,7 +559,7 @@ export const pdfChatbot = async (req, res) => {
         messages.push({ role: "user", content: message });
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.0-flash",
             messages,
             temperature: 0.7,
             maxTokens: 800,
