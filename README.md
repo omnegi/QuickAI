@@ -27,7 +27,7 @@ Quick.ai is a powerful AI SaaS platform that integrates multiple generative tool
 |-------------|----------------------------------------------|
 | Frontend    | React.js, TailwindCSS, Framer Motion, Lucide |
 | Backend     | Node.js (Express)                            |
-| AI Model    | Gemini (Google Generative AI)                |
+| AI Model    | Gemini (Google Generative AI) or Groq        |
 | Image API   | ClipDrop (Image Generation)                  |
 | Media API   | Cloudinary (Background Removal)              |
 | Auth & Billing | Clerk, Stripe                            |
