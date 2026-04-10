@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+// import OpenAI from "openai";
 import sql from "../configs/db.js";
 import { clerkClient } from "@clerk/express";
 import { response } from "express";
@@ -6,12 +6,20 @@ import { v2 as cloudinary } from 'cloudinary';
 import axios from "axios";
 import fs from 'fs';
 import pdf from 'pdf-parse/lib/pdf-parse.js';
+import Groq from "groq-sdk";
 
-const AI = new OpenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+// const AI = new OpenAI({
+//     apiKey: process.env.GEMINI_API_KEY,
+//     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+// });
+
+
+
+const groq = new Groq({
+
+  apiKey: process.env.GROQ_API_KEY
+
 });
-
 export const generateArticle = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -22,8 +30,8 @@ export const generateArticle = async (req, res) => {
         if (plan !== 'premium' && free_usage >= 100) {
             return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
         }
-        const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+        const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 1200,
@@ -58,8 +66,8 @@ export const generateBlogTitle = async (req, res) => {
             return res.json({ success: false, message: 'Free usage limit exceeded. Upgrade to premium for more requests.' });
         }
 
-        const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+        const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 800,
@@ -239,9 +247,9 @@ Give clear professional output.
 `;
 
 
-        const response = await AI.chat.completions.create({
+        const response = await groq.chat.completions.create({
 
-            model: "gemini-2.5-flash",
+            model: "llama-3.1-8b-instant",
 
             messages: [
                 {
@@ -323,8 +331,8 @@ export const pdfSummerizer = async (req, res) => {
         const prompt = `"Summarize the uploaded PDF in detail. 
         Include all major sections, important points, and technical terms if present." ${pdfData.text}`;
 
-        const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+        const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
             maxTokens: 1500,
@@ -379,8 +387,8 @@ The email should sound natural, polite, and clear.`;
 
 
         // AI API Call (Gemini)
-        const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+        const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
             messages: [
                 {
                     role: "user",
@@ -431,8 +439,8 @@ Generate a list of 10 smart, professional interview questions to ask a candidate
 Include both technical and behavioral questions if relevant. Format as a numbered list.
 `;
 
-        const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+        const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
             messages: [
                 {
                     role: "user",
@@ -489,8 +497,8 @@ Always try to give complete and meaningful responses rather than very short repl
             { role: "user", content: message }
         ];
 
-        const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+        const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
             messages,
             temperature: 0.7,
             maxTokens: 1000,         
@@ -558,8 +566,8 @@ export const pdfChatbot = async (req, res) => {
         // Add current user message
         messages.push({ role: "user", content: message });
 
-        const response = await AI.chat.completions.create({
-            model: "gemini-2.5-flash",
+        const response = await groq.chat.completions.create({
+            model: "llama-3.1-8b-instant",
             messages,
             temperature: 0.7,
             maxTokens: 800,
