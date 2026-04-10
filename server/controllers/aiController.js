@@ -34,7 +34,7 @@ export const generateArticle = async (req, res) => {
             model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
-            maxTokens: 1200,
+            max_tokens: 1200,
 
         });
         const content = response.choices[0].message.content;
@@ -70,7 +70,7 @@ export const generateBlogTitle = async (req, res) => {
             model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
-            maxTokens: 800,
+            max_tokens: 800,
         });
 
 
@@ -259,7 +259,7 @@ Give clear professional output.
             ],
 
             temperature: 0.3,
-            maxTokens: 1500,            
+            max_tokens: 1500,            
 
         });
 
@@ -335,7 +335,7 @@ export const pdfSummerizer = async (req, res) => {
             model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt, }],
             temperature: 0.7,
-            maxTokens: 1500,
+            max_tokens: 1500,
         });
 
         const content = response.choices[0].message.content;
@@ -396,7 +396,7 @@ The email should sound natural, polite, and clear.`;
                 },
             ],
             temperature: 0.7,
-            maxTokens: 1200,
+            max_tokens: 1200,
         });
 
         const content = response.choices[0].message.content;
@@ -448,7 +448,7 @@ Include both technical and behavioral questions if relevant. Format as a numbere
                 },
             ],
             temperature: 0.5,
-            maxTokens: 600,            
+            max_tokens: 600,            
         });
 
         const content = response.choices[0].message.content;
@@ -501,7 +501,7 @@ Always try to give complete and meaningful responses rather than very short repl
             model: "llama-3.1-8b-instant",
             messages,
             temperature: 0.7,
-            maxTokens: 1000,         
+            max_tokens: 1000,         
 
         });
 
@@ -570,7 +570,7 @@ export const pdfChatbot = async (req, res) => {
             model: "llama-3.1-8b-instant",
             messages,
             temperature: 0.7,
-            maxTokens: 800,
+            max_tokens: 800,
         });
 
         const reply = response.choices[0].message.content;
