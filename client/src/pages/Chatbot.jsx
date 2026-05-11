@@ -281,7 +281,7 @@ const ChatWithAI = () => {
 
                   ${msg.role === "user"
 
-                      msg.role === "user"
+                      
     ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-br-md"
     : "bg-white/5 border border-white/10 text-white/90 rounded-bl-md"
 }
